@@ -1,9 +1,18 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO & Référencement Google -->
     <title>HM Shop - Valorant Rank Boosting Calculator</title>
+    <meta name="description" content="Découvrez le meilleur service de Valorant Rank Boosting en Europe (EU) avec des prix ultra-compétitifs, rapides et sécurisés. Calculez votre boost dès maintenant.">
+    <meta name="keywords" content="valorant, boost, rank boosting, elo boost, valorant boosting, hm shop, eu boost">
+    <meta name="author" content="HM Shop">
+    
+    <!-- Favicon (Logo dans l'onglet du navigateur / favoris) -->
+    <link rel="icon" type="image/webp" href="images/logo.webp">
+
     <style>
         body {
             background-color: #0d0d0d;
@@ -391,7 +400,6 @@
             flex-wrap: wrap;
         }
 
-        /* Style pour le temps estimé de livraison maximale */
         .delivery-time-box {
             font-size: 0.8rem;
             color: #00e676;
@@ -1273,8 +1281,6 @@
                 return;
             }
 
-            // Calcul du temps exponentiel lissé : 
-            // Formule basée sur une puissance de 1.35 pour coller à tes repères (Iron 1 -> Bronze 1 = ~6h, Iron 1 -> Bronze 3 = ~18h / 1 jour, Diamant 1 -> Ascendant 1 = ~3 jours, Iron 1 -> Immo 1 = 21 jours / 3 semaines)
             let maxTotalSteps = 21;
             let progressRatio = stepsDiff / maxTotalSteps;
             let daysEstimated = Math.pow(progressRatio, 1.35) * 21;
