@@ -1,0 +1,1348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HM Shop - Valorant Rank Boosting Calculator</title>
+    <style>
+        body {
+            background-color: #0d0d0d;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* --- SÉLECTEUR DE LANGUE (FR, EN, ES, IT, DE) --- */
+        .top-bar {
+            width: 100%;
+            max-width: 1100px;
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 15px;
+        }
+
+        .lang-switch {
+            background-color: #1a1a1a;
+            border: 1px solid #404040;
+            border-radius: 10px;
+            display: flex;
+            padding: 4px;
+            gap: 5px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        .lang-btn {
+            background: transparent;
+            border: none;
+            color: #a6a6a6;
+            padding: 8px 10px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .lang-btn.active {
+            background-color: #ffffff;
+            color: #0d0d0d;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 5px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        p.subtitle {
+            color: #a6a6a6;
+            margin-bottom: 20px;
+        }
+
+        /* Bandeau marketing compétitivité */
+        .competitiveness-banner {
+            width: 100%;
+            max-width: 1100px;
+            background: linear-gradient(135deg, #1a1a1a 0%, #262626 100%);
+            border: 1px solid #404040;
+            border-left: 4px solid #ffffff;
+            border-radius: 10px;
+            padding: 15px 20px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        }
+
+        .banner-text h3 {
+            margin: 0 0 4px 0;
+            font-size: 1rem;
+            color: #ffffff;
+        }
+
+        .banner-text p {
+            margin: 0;
+            font-size: 0.8rem;
+            color: #a6a6a6;
+        }
+
+        .banner-badge {
+            background-color: #ffffff;
+            color: #0d0d0d;
+            font-weight: bold;
+            font-size: 0.75rem;
+            padding: 6px 12px;
+            border-radius: 6px;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .main-container {
+            width: 100%;
+            max-width: 1100px;
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 20px;
+            align-items: start;
+        }
+
+        .left-column {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .right-column {
+            position: sticky;
+            top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .card {
+            background-color: #1a1a1a;
+            border: 1px solid #333333;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            background-color: #262626;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #404040;
+            overflow: hidden;
+        }
+
+        .card-icon img {
+            width: 26px;
+            height: 26px;
+            object-fit: contain;
+        }
+
+        .card-title-group h2 {
+            font-size: 1.2rem;
+            margin: 0;
+            color: #ffffff;
+        }
+
+        .card-title-group p {
+            font-size: 0.85rem;
+            margin: 3px 0 0 0;
+            color: #a6a6a6;
+        }
+
+        .ranks-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .rank-btn {
+            background-color: #262626;
+            border: 1px solid #404040;
+            border-radius: 8px;
+            padding: 10px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #ffffff;
+        }
+
+        .rank-btn:hover:not(.disabled) {
+            border-color: #ffffff;
+            background-color: #333333;
+        }
+
+        .rank-btn.active {
+            background-color: #ffffff;
+            color: #0d0d0d;
+            border-color: #ffffff;
+            font-weight: bold;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+        }
+
+        .rank-btn.active .rank-name-mini {
+            color: #0d0d0d;
+        }
+
+        .rank-btn.disabled {
+            opacity: 0.25;
+            cursor: not-allowed;
+            background-color: #1a1a1a;
+            border-color: #262626;
+        }
+
+        .rank-icon-img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+            margin-bottom: 6px;
+        }
+
+        .rank-name-mini {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            color: #cccccc;
+        }
+
+        .divisions-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .div-btn {
+            flex: 1;
+            background-color: #262626;
+            border: 1px solid #404040;
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+            color: #ffffff;
+            transition: all 0.2s ease;
+        }
+
+        .div-btn:hover:not(.disabled) {
+            border-color: #ffffff;
+            background-color: #333333;
+        }
+
+        .div-btn.active {
+            background-color: #ffffff;
+            color: #0d0d0d;
+            border-color: #ffffff;
+        }
+
+        .div-btn.disabled {
+            opacity: 0.25;
+            cursor: not-allowed;
+            background-color: #1a1a1a;
+            border-color: #262626;
+        }
+
+        .rr-counter-container {
+            display: flex;
+            align-items: center;
+            background-color: #262626;
+            border: 1px solid #404040;
+            border-radius: 8px;
+            padding: 6px;
+            margin-bottom: 15px;
+        }
+
+        .rr-counter-btn {
+            background-color: #1a1a1a;
+            color: #ffffff;
+            border: 1px solid #333;
+            border-radius: 6px;
+            width: 45px;
+            height: 40px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+
+        .rr-counter-btn:hover {
+            background-color: #333333;
+            border-color: #ffffff;
+        }
+
+        .rr-counter-input-group {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .rr-label-text {
+            color: #a6a6a6;
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        .rr-input-field {
+            background: transparent;
+            border: none;
+            color: #ffffff;
+            font-size: 1.2rem;
+            font-weight: bold;
+            width: 70px;
+            text-align: center;
+            outline: none;
+        }
+
+        .options-row {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .option-group {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .option-group label {
+            font-size: 0.85rem;
+            margin-bottom: 6px;
+            color: #a6a6a6;
+        }
+
+        select {
+            background-color: #262626;
+            color: #ffffff;
+            border: 1px solid #404040;
+            border-radius: 8px;
+            padding: 10px;
+            font-size: 0.95rem;
+            outline: none;
+            cursor: pointer;
+        }
+
+        select:focus {
+            border-color: #ffffff;
+        }
+
+        .server-notice {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-left: 3px solid #ffffff;
+            padding: 10px 14px;
+            border-radius: 0 6px 6px 0;
+            font-size: 0.85rem;
+            color: #cccccc;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* --- CHECKOUT --- */
+        .checkout-summary {
+            font-size: 0.85rem;
+            color: #cccccc;
+            background-color: #262626;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            text-align: center;
+            border: 1px solid #404040;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        /* Style pour le temps estimé de livraison maximale */
+        .delivery-time-box {
+            font-size: 0.8rem;
+            color: #00e676;
+            background-color: rgba(0, 230, 118, 0.08);
+            border: 1px solid rgba(0, 230, 118, 0.2);
+            padding: 8px 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .summary-rank-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            color: #ffffff;
+            font-weight: bold;
+        }
+
+        .summary-rank-img {
+            width: 20px;
+            height: 20px;
+            object-fit: contain;
+        }
+
+        .discount-banner {
+            background-color: rgba(255, 255, 255, 0.08);
+            border: 1px dashed #ffffff;
+            padding: 10px 14px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.85rem;
+            text-align: center;
+            color: #ffffff;
+        }
+
+        .mode-selector {
+            display: flex;
+            background-color: #262626;
+            border-radius: 8px;
+            padding: 4px;
+            margin-bottom: 20px;
+            border: 1px solid #404040;
+        }
+
+        .mode-btn {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: #a6a6a6;
+            padding: 10px;
+            font-size: 0.95rem;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .mode-btn.active {
+            background-color: #ffffff;
+            color: #0d0d0d;
+        }
+
+        .extras-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .extra-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #262626;
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: 1px solid #404040;
+        }
+
+        .extra-label-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.85rem;
+        }
+
+        .extra-badge {
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .badge-positive {
+            background-color: rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+            border: 1px solid #666;
+        }
+
+        .badge-negative {
+            background-color: rgba(200, 50, 50, 0.2);
+            color: #ff8080;
+            border: 1px solid #803030;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 40px;
+            height: 22px;
+        }
+
+        .switch input { 
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #404040;
+            transition: .2s;
+            border-radius: 22px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .2s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #ffffff;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(18px);
+            background-color: #0d0d0d;
+        }
+
+        .checkout-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid #333333;
+            padding-top: 15px;
+        }
+
+        .price-info span {
+            display: block;
+        }
+
+        .price-title {
+            font-size: 0.8rem;
+            color: #a6a6a6;
+        }
+
+        .price-container {
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+            margin-top: 2px;
+        }
+
+        .old-price {
+            font-size: 1.1rem;
+            color: #737373;
+            text-decoration: line-through;
+        }
+
+        .price-amount {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #ffffff;
+        }
+
+        .btn-order {
+            background-color: #ffffff;
+            color: #0d0d0d;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 25px;
+            font-size: 0.95rem;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: background-color 0.2s;
+        }
+
+        .btn-order:hover {
+            background-color: #d9d9d9;
+        }
+
+        .advice-card {
+            background-color: #1a1a1a;
+            border: 1px solid #333333;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+            display: flex;
+            gap: 15px;
+            align-items: flex-start;
+        }
+
+        .advice-icon {
+            font-size: 1.4rem;
+            background-color: #262626;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            border: 1px solid #404040;
+        }
+
+        .advice-text-content {
+            font-size: 0.85rem;
+            line-height: 1.4;
+            color: #cccccc;
+        }
+
+        @media (max-width: 850px) {
+            .main-container {
+                grid-template-columns: 1fr;
+            }
+            .right-column {
+                position: static;
+            }
+            .competitiveness-banner {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sélecteur de langue (FR, EN, ES, IT, DE) -->
+    <div class="top-bar">
+        <div class="lang-switch">
+            <button class="lang-btn active" id="btnLangFR" onclick="setLanguage('fr')">🇫🇷 FR</button>
+            <button class="lang-btn" id="btnLangEN" onclick="setLanguage('en')">🇬🇧 EN</button>
+            <button class="lang-btn" id="btnLangES" onclick="setLanguage('es')">🇪🇸 ES</button>
+            <button class="lang-btn" id="btnLangIT" onclick="setLanguage('it')">🇮🇹 IT</button>
+            <button class="lang-btn" id="btnLangDE" onclick="setLanguage('de')">🇩🇪 DE</button>
+        </div>
+    </div>
+
+    <h1 id="shopTitle">HM Shop</h1>
+    <p class="subtitle" id="shopSubtitle">Calculateur de Rank Boosting Valorant</p>
+
+    <!-- Bandeau marketing compétitivité -->
+    <div class="competitiveness-banner">
+        <div class="banner-text">
+            <h3 id="bannerTitle">⚡ Meilleurs prix du marché</h3>
+            <p id="bannerDesc">Nous sommes nettement plus compétitifs et abordables que les grandes plateformes telles qu'Eldorado ou Gameboost.</p>
+        </div>
+        <div class="banner-badge" id="bannerBadge">Meilleur Rapport 🔥</div>
+    </div>
+
+    <div class="main-container">
+        
+        <!-- COLONNE DE GAUCHE -->
+        <div class="left-column">
+            <!-- CURRENT RANK CARD -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" id="currentHeaderIcon"></div>
+                    <div class="card-title-group">
+                        <h2 id="currentRankHeaderTitle">Rang Actuel</h2>
+                        <p id="currentRankHeaderDesc">Sélectionnez votre rang et division actuels.</p>
+                    </div>
+                </div>
+
+                <div class="ranks-grid" id="currentRanksGrid"></div>
+                <div class="divisions-row" id="currentDivisionsRow"></div>
+
+                <div class="options-row">
+                    <div class="option-group">
+                        <label for="currentRR" id="currentRRLabel">Tranche RR Actuelle</label>
+                        <select id="currentRR" onchange="calculatePrice()">
+                            <option value="0" selected>0 - 20 RR</option>
+                            <option value="1">21 - 40 RR</option>
+                            <option value="2">41 - 60 RR</option>
+                            <option value="3">61 - 80 RR</option>
+                            <option value="4">81 - 99 RR</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div style="margin-top: 15px;">
+                    <div class="server-notice">
+                        <span>🇪🇺</span>
+                        <span id="serverNoticeText"><strong>Note :</strong> Nous traitons uniquement les comptes européens (EU).</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DESIRED RANK CARD -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" id="desiredHeaderIcon"></div>
+                    <div class="card-title-group">
+                        <h2 id="desiredRankHeaderTitle">Rang Souhaité</h2>
+                        <p id="desiredRankHeaderDesc">Sélectionnez votre rang visé et division ou RR.</p>
+                    </div>
+                </div>
+
+                <div class="ranks-grid" id="desiredRanksGrid"></div>
+                
+                <div id="desiredSelectionContainer"></div>
+            </div>
+        </div>
+
+        <!-- COLONNE DE DROITE : Checkout + Conseils -->
+        <div class="right-column">
+            <div class="card">
+                <div class="card-header" style="margin-bottom: 15px;">
+                    <div class="card-icon" style="background: transparent; border: none;">🛒</div>
+                    <div class="card-title-group">
+                        <h2 id="checkoutHeaderTitle">Panneau de Commande</h2>
+                        <p id="checkoutHeaderDesc">Ajoutez des options personnalisées à votre boost.</p>
+                    </div>
+                </div>
+
+                <div class="checkout-summary" id="checkoutSummaryText"></div>
+                
+                <!-- Boîte de temps de livraison estimé maximale -->
+                <div class="delivery-time-box" id="deliveryTimeBox"></div>
+
+                <div class="discount-banner" id="discountBanner">
+                    🎉 <strong>Réduction -20% Premiers Clients</strong><br>
+                    <span style="font-size: 0.78rem; color: #a6a6a6;" id="discountDesc">Remise spéciale de lancement appliquée pour nos premiers clients !</span>
+                </div>
+
+                <div class="mode-selector">
+                    <button class="mode-btn active" id="btnSolo" onclick="setMode('solo')">Solo Boosting</button>
+                    <button class="mode-btn" id="btnDuo" onclick="setMode('duo')">Duo Boosting</button>
+                </div>
+
+                <div class="extras-list" id="extrasList"></div>
+
+                <div class="checkout-footer">
+                    <div class="price-info">
+                        <span class="price-title" id="totalPriceTitle">Prix Total</span>
+                        <div class="price-container">
+                            <span class="old-price" id="oldPrice">0.00 €</span>
+                            <span class="price-amount" id="totalPrice">0.00 €</span>
+                        </div>
+                    </div>
+                    <button class="btn-order" id="btnOrderText" onclick="alert(translations[lang].alertOrder)">Commander →</button>
+                </div>
+            </div>
+
+            <!-- Encadré de conseils, réserve de refus et disclaimer anti-cheat -->
+            <div class="advice-card">
+                <div class="advice-icon">⚠️</div>
+                <div class="advice-text-content" id="adviceTextContent"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const ranks = [
+            { id: 0, name: "Iron", frName: "Fer", esName: "Hierro", itName: "Ferro", deName: "Eisen", file: "images/iron.webp" },
+            { id: 1, name: "Bronze", frName: "Bronze", esName: "Bronce", itName: "Bronzo", deName: "Bronze", file: "images/bronze.webp" },
+            { id: 2, name: "Silver", frName: "Argent", esName: "Plata", itName: "Argento", deName: "Silber", file: "images/silver.webp" },
+            { id: 3, name: "Gold", frName: "Or", esName: "Oro", itName: "Oro", deName: "Gold", file: "images/gold.webp" },
+            { id: 4, name: "Platinum", frName: "Platine", esName: "Platino", itName: "Platino", deName: "Platin", file: "images/platinum.webp" },
+            { id: 5, name: "Diamond", frName: "Diamant", esName: "Diamante", itName: "Diamante", deName: "Diamant", file: "images/diamond.webp" },
+            { id: 6, name: "Ascendant", frName: "Ascendant", esName: "Ascendente", itName: "Ascendente", deName: "Aszendent", file: "images/ascendant.webp" },
+            { id: 7, name: "Immortal", frName: "Immortel", esName: "Inmortal", itName: "Immortale", deName: "Unsterblich", file: "images/immortal.webp" }
+        ];
+
+        let lang = 'fr'; // Langue par défaut définie sur le Français
+
+        const translations = {
+            fr: {
+                subtitle: "Calculateur de Rank Boosting Valorant",
+                bannerTitle: "⚡ Meilleurs prix du marché",
+                bannerDesc: "Nous sommes nettement plus compétitifs et abordables que les grandes plateformes telles qu'Eldorado ou Gameboost.",
+                bannerBadge: "Meilleur Rapport 🔥",
+                currentTitle: "Rang Actuel",
+                currentDesc: "Sélectionnez votre rang et division actuels.",
+                currentRRLabel: "Tranche RR Actuelle",
+                serverNotice: "<strong>Note :</strong> Nous traitons uniquement les comptes européens (EU).",
+                desiredTitle: "Rang Souhaité",
+                desiredDesc: "Sélectionnez votre rang visé et division ou RR.",
+                checkoutTitle: "Panneau de Commande",
+                checkoutDesc: "Ajoutez des options personnalisées à votre boost.",
+                deliveryLabel: "⏱️ Livraison estimée MAXIMALE :",
+                discountHtml: "🎉 <strong>Réduction -20% Premiers Clients</strong><br><span style='font-size: 0.78rem; color: #a6a6a6;'>Remise spéciale de lancement appliquée pour nos premiers clients !</span>",
+                soloBtn: "Solo Boosting",
+                duoBtn: "Duo Boosting",
+                streamOpt: "Stream des parties",
+                priorityOpt: "Passer en priorité",
+                boosterOpt: "Réduction Booster Serveur",
+                totalPrice: "Prix Total",
+                alertOrder: "Redirection vers le système de tickets Discord !",
+                btnOrderText: "Commander →",
+                adviceHtml: `
+                    <p><strong>Conseil :</strong> Nous déconseillons les grands écarts (ex: Silver 1 à Ascendant 1). Cela augmente les coûts, les délais et les risques de ban, et <strong>nous nous réservons le droit de refuser toute demande trop ambitieuse</strong>.</p>
+                    <p style="margin-top: 10px; border-top: 1px solid #333; padding-top: 8px; color: #00e676;"><strong>🛡️ 100% Sécurité :</strong> Nos boosters n'utilisent aucun logiciel de triche, aucun logiciel tiers (third-party), ni aucun autre moyen illicite sur le jeu.</p>
+                `
+            },
+            en: {
+                subtitle: "Valorant Rank Boosting Calculator",
+                bannerTitle: "⚡ Best Prices on the Market",
+                bannerDesc: "We are significantly more competitive and affordable than major platforms like Eldorado or Gameboost.",
+                bannerBadge: "Best Value 🔥",
+                currentTitle: "Current Rank",
+                currentDesc: "Select your current tier and division.",
+                currentRRLabel: "Current RR Bracket",
+                serverNotice: "<strong>Note :</strong> We only process European (EU) accounts.",
+                desiredTitle: "Desired Rank",
+                desiredDesc: "Select your desired tier and division or RR.",
+                checkoutTitle: "Checkout",
+                checkoutDesc: "Add extra options to your boost.",
+                deliveryLabel: "⏱️ MAX estimated delivery time:",
+                discountHtml: "🎉 <strong>-20% First Clients Discount</strong><br><span style='font-size: 0.78rem; color: #a6a6a6;'>Special launch discount applied for our early clients!</span>",
+                soloBtn: "Solo Boosting",
+                duoBtn: "Duo Boosting",
+                streamOpt: "Stream games",
+                priorityOpt: "Priority Boost Completion",
+                boosterOpt: "Server Booster Discount",
+                totalPrice: "Total Price",
+                alertOrder: "Redirecting to Discord ticket system!",
+                btnOrderText: "Buy Boost →",
+                adviceHtml: `
+                    <p><strong>Pro Tip:</strong> We advise against huge rank leaps (e.g., Silver 1 to Ascendant 1). It increases costs and time, raises security ban risks, and <strong>we reserve the right to refuse overly ambitious requests</strong> to protect your account.</p>
+                    <p style="margin-top: 10px; border-top: 1px solid #333; padding-top: 8px; color: #00e676;"><strong>🛡️ 100% Security:</strong> Our boosters do not use any cheating software, third-party software, or any other unauthorized means in the game.</p>
+                `
+            },
+            es: {
+                subtitle: "Calculadora de Rank Boosting de Valorant",
+                bannerTitle: "⚡ Mejores precios del mercado",
+                bannerDesc: "Somos significativamente más competitivos y económicos que las grandes plataformas como Eldorado o Gameboost.",
+                bannerBadge: "Mejor Valor 🔥",
+                currentTitle: "Rango Actual",
+                currentDesc: "Selecciona tu rango y división actuales.",
+                currentRRLabel: "Rango de RR Actual",
+                serverNotice: "<strong>Nota:</strong> Solo procesamos cuentas europeas (EU).",
+                desiredTitle: "Rango Deseado",
+                desiredDesc: "Selecciona tu rango deseado y división o RR.",
+                checkoutTitle: "Panel de Pago",
+                checkoutDesc: "Añade opciones adicionales a tu boost.",
+                deliveryLabel: "⏱️ Tiempo de entrega MÁXIMO estimado:",
+                discountHtml: "🎉 <strong>Descuento del -20% Primeros Clientes</strong><br><span style='font-size: 0.78rem; color: #a6a6a6;'>¡Descuento especial de lanzamiento aplicado!</span>",
+                soloBtn: "Solo Boosting",
+                duoBtn: "Duo Boosting",
+                streamOpt: "Streaming de partidas",
+                priorityOpt: "Boost Prioritario",
+                boosterOpt: "Descuento Booster de Servidor",
+                totalPrice: "Precio Total",
+                alertOrder: "¡Redirigiendo al sistema de tickets de Discord!",
+                btnOrderText: "Comprar Boost →",
+                adviceHtml: `
+                    <p><strong>Consejo:</strong> Aconsejamos no hacer saltos de rango muy grandes (ej. de Silver 1 a Ascendant 1). Incrementa los costes, tiempos y riesgos de baneo, y <strong>nos reservamos el derecho de rechazar solicitudes demasiado ambiciosas</strong>.</p>
+                    <p style="margin-top: 10px; border-top: 1px solid #333; padding-top: 8px; color: #00e676;"><strong>🛡️ 100% Seguridad:</strong> Nativos boosters no utilizan ningún software de trampas, software de terceros ni ningún otro medio ilícito en el juego.</p>
+                `
+            },
+            it: {
+                subtitle: "Calcolatore di Rank Boosting per Valorant",
+                bannerTitle: "⚡ I migliori prezzi sul mercato",
+                bannerDesc: "Siamo notevolmente più competitivi e convenienti rispetto alle grandi piattaforme come Eldorado o Gameboost.",
+                bannerBadge: "Miglior Valore 🔥",
+                currentTitle: "Grado Attuale",
+                currentDesc: "Seleziona il tuo grado e divisione attuali.",
+                currentRRLabel: "Fascia RR Attuale",
+                serverNotice: "<strong>Nota:</strong> Gestiamo solo account europei (EU).",
+                desiredTitle: "Grado Desiderato",
+                desiredDesc: "Seleziona il grado desiderato e divisione o RR.",
+                checkoutTitle: "Pannello d'Ordine",
+                checkoutDesc: "Aggiungi opzioni extra al tuo boost.",
+                deliveryLabel: "⏱️ Tempo di consegna MASSIMO stimato:",
+                discountHtml: "🎉 <strong>Sconto -20% Primi Clienti</strong><br><span style='font-size: 0.78rem; color: #a6a6a6;'>Sconto speciale di lancio applicato per i nostri primi clienti!</span>",
+                soloBtn: "Solo Boosting",
+                duoBtn: "Duo Boosting",
+                streamOpt: "Streaming delle partite",
+                priorityOpt: "Completamento Prioritario",
+                boosterOpt: "Sconto Booster Server",
+                totalPrice: "Prezzo Totale",
+                alertOrder: "Reindirizzamento al sistema di ticket Discord!",
+                btnOrderText: "Acquista Boost →",
+                adviceHtml: `
+                    <p><strong>Consiglio:</strong> Sconsigliamo grandi salti di grado (es. da Silver 1 ad Ascendant 1). Aumenta i costi, i tempi e i rischi di ban, e <strong>ci riserva il diritto di rifiutare richieste troppo ambiziose</strong>.</p>
+                    <p style="margin-top: 10px; border-top: 1px solid #333; padding-top: 8px; color: #00e676;"><strong>🛡️ 100% Sicurezza:</strong> I nostri booster non utilizzano alcun software di cheat, software di terze parti (third-party) o altri mezzi illeciti nel gioco.</p>
+                `
+            },
+            de: {
+                subtitle: "Valorant Rang Boosting Rechner",
+                bannerTitle: "⚡ Beste Preise auf dem Markt",
+                bannerDesc: "Wir sind deutlich wettbewerbsfähiger und günstiger als große Plattformen wie Eldorado oder Gameboost.",
+                bannerBadge: "Bester Wert 🔥",
+                currentTitle: "Aktueller Rang",
+                currentDesc: "Wähle deinen aktuellen Rang und deine Division.",
+                currentRRLabel: "Aktueller RR-Bereich",
+                serverNotice: "<strong>Hinweis:</strong> Wir bearbeiten nur europäische Konten (EU).",
+                desiredTitle: "Gewünschter Rang",
+                desiredDesc: "Wähle deinen Wunschrang und Division oder RR.",
+                checkoutTitle: "Kasse",
+                checkoutDesc: "Füge zusätzliche Optionen zu deinem Boost hinzu.",
+                deliveryLabel: "⏱️ Maximale geschätzte Lieferzeit:",
+                discountHtml: "🎉 <strong>-20% Rabatt für Erstkunden</strong><br><span style='font-size: 0.78rem; color: #a6a6a6;'>Spezieller Einführungsrabatt für unsere ersten Kunden!</span>",
+                soloBtn: "Solo Boosting",
+                duoBtn: "Duo Boosting",
+                streamOpt: "Spiele streamen",
+                priorityOpt: "Priorität-Boost",
+                boosterOpt: "Server-Booster Rabatt",
+                totalPrice: "Gesamtpreis",
+                alertOrder: "Weiterleitung zum Discord-Ticketsystem!",
+                btnOrderText: "Boost Kaufen →",
+                adviceHtml: `
+                    <p><strong>Tipp:</strong> Wir raten von riesigen Rangsprüngen ab (z.B. Silver 1 zu Ascendant 1). Das erhöht Kosten, Lieferzeiten und das Risiko von Sicherheitsbanns, und <strong>wir behalten uns das Recht vor, zu ambitionierte Anfragen abzulehnen</strong>.</p>
+                    <p style="margin-top: 10px; border-top: 1px solid #333; padding-top: 8px; color: #00e676;"><strong>🛡️ 100% Sicherheit:</strong> Unsere Booster verwenden keinerlei Cheat-Software, Drittanbieter-Software (Third-Party) oder andere unzulässige Hilfsmittel im Spiel.</p>
+                `
+            }
+        };
+
+        let state = {
+            currentRank: 0,
+            currentDiv: 1,
+            desiredRank: 1,
+            desiredDiv: 1,
+            desiredRR: 0,
+            mode: 'solo',
+            options: {
+                stream: false,         
+                priority: false,       
+                boosterDiscount: false 
+            }
+        };
+
+        function setLanguage(selectedLang) {
+            lang = selectedLang;
+            document.getElementById('btnLangFR').className = `lang-btn ${lang === 'fr' ? 'active' : ''}`;
+            document.getElementById('btnLangEN').className = `lang-btn ${lang === 'en' ? 'active' : ''}`;
+            document.getElementById('btnLangES').className = `lang-btn ${lang === 'es' ? 'active' : ''}`;
+            document.getElementById('btnLangIT').className = `lang-btn ${lang === 'it' ? 'active' : ''}`;
+            document.getElementById('btnLangDE').className = `lang-btn ${lang === 'de' ? 'active' : ''}`;
+            
+            document.getElementById('shopSubtitle').innerText = translations[lang].subtitle;
+            document.getElementById('bannerTitle').innerText = translations[lang].bannerTitle;
+            document.getElementById('bannerDesc').innerText = translations[lang].bannerDesc;
+            document.getElementById('bannerBadge').innerText = translations[lang].bannerBadge;
+            document.getElementById('currentRankHeaderTitle').innerText = translations[lang].currentTitle;
+            document.getElementById('currentRankHeaderDesc').innerText = translations[lang].currentDesc;
+            document.getElementById('currentRRLabel').innerText = translations[lang].currentRRLabel;
+            document.getElementById('serverNoticeText').innerHTML = translations[lang].serverNotice;
+            document.getElementById('desiredRankHeaderTitle').innerText = translations[lang].desiredTitle;
+            document.getElementById('desiredRankHeaderDesc').innerText = translations[lang].desiredDesc;
+            document.getElementById('checkoutHeaderTitle').innerText = translations[lang].checkoutTitle;
+            document.getElementById('checkoutHeaderDesc').innerText = translations[lang].checkoutDesc;
+            document.getElementById('discountBanner').innerHTML = translations[lang].discountHtml;
+            document.getElementById('btnSolo').innerText = translations[lang].soloBtn;
+            document.getElementById('btnDuo').innerText = translations[lang].duoBtn;
+            document.getElementById('totalPriceTitle').innerText = translations[lang].totalPrice;
+            document.getElementById('btnOrderText').innerText = translations[lang].btnOrderText;
+            document.getElementById('adviceTextContent').innerHTML = translations[lang].adviceHtml;
+
+            initCalculator();
+        }
+
+        function setMode(mode) {
+            state.mode = mode;
+            document.getElementById('btnSolo').className = `mode-btn ${mode === 'solo' ? 'active' : ''}`;
+            document.getElementById('btnDuo').className = `mode-btn ${mode === 'duo' ? 'active' : ''}`;
+            renderExtras();
+            calculatePrice();
+        }
+
+        function initCalculator() {
+            renderHeaderIcons();
+            renderRranksFixed();
+            renderDivisions();
+            renderExtras();
+            calculatePrice();
+        }
+
+        function renderHeaderIcons() {
+            let currentObj = ranks[state.currentRank];
+            document.getElementById('currentHeaderIcon').innerHTML = `<img src="${currentObj.file}" alt="${currentObj.name}">`;
+
+            let desiredObj = ranks[state.desiredRank];
+            document.getElementById('desiredHeaderIcon').innerHTML = `<img src="${desiredObj.file}" alt="${desiredObj.name}">`;
+        }
+
+        function getRankName(r) {
+            if (lang === 'fr') return r.frName;
+            if (lang === 'es') return r.esName;
+            if (lang === 'it') return r.itName;
+            if (lang === 'de') return r.deName;
+            return r.name;
+        }
+
+        function renderRranksFixed() {
+            let currentGrid = document.getElementById('currentRanksGrid');
+            currentGrid.innerHTML = '';
+            ranks.forEach(r => {
+                let rName = getRankName(r);
+                let btn = document.createElement('div');
+                btn.className = `rank-btn ${state.currentRank === r.id ? 'active' : ''}`;
+                btn.innerHTML = `<img src="${r.file}" alt="${r.name}" class="rank-icon-img"><span class="rank-name-mini">${rName}</span>`;
+                btn.onclick = () => {
+                    state.currentRank = r.id;
+                    let currentTotal = (state.currentRank * 3) + (state.currentDiv - 1);
+                    let desiredTotal = state.desiredRank === 7 ? (7 * 3) + (state.desiredRR / 33.3) : (state.desiredRank * 3) + (state.desiredDiv - 1);
+                    if (desiredTotal <= currentTotal) {
+                        state.desiredRank = state.currentRank;
+                        if(state.desiredRank === 7) {
+                            state.desiredRR = 10;
+                        } else {
+                            state.desiredDiv = Math.min(3, state.currentDiv + 1);
+                        }
+                    }
+                    initCalculator();
+                };
+                currentGrid.appendChild(btn);
+            });
+
+            let desiredGrid = document.getElementById('desiredRanksGrid');
+            desiredGrid.innerHTML = '';
+            ranks.forEach(r => {
+                let rName = getRankName(r);
+                let isDisabled = r.id < state.currentRank;
+                let btn = document.createElement('div');
+                btn.className = `rank-btn ${state.desiredRank === r.id ? 'active' : ''} ${isDisabled ? 'disabled' : ''}`;
+                btn.innerHTML = `<img src="${r.file}" alt="${r.name}" class="rank-icon-img"><span class="rank-name-mini">${rName}</span>`;
+                
+                if (!isDisabled) {
+                    btn.onclick = () => {
+                        state.desiredRank = r.id;
+                        initCalculator();
+                    };
+                }
+                desiredGrid.appendChild(btn);
+            });
+        }
+
+        function renderDivisions() {
+            let container = document.getElementById('desiredSelectionContainer');
+            container.innerHTML = '';
+
+            if (state.desiredRank === 7) {
+                container.innerHTML = `
+                    <div class="rr-counter-container">
+                        <button class="rr-counter-btn" onclick="adjustRR(-10)">-</button>
+                        <div class="rr-counter-input-group">
+                            <span class="rr-label-text">RR</span>
+                            <input type="number" class="rr-input-field" id="immortalRRInput" value="${state.desiredRR}" min="0" max="400" step="10" oninput="updateRRFromInput(this)">
+                        </div>
+                        <button class="rr-counter-btn" onclick="adjustRR(10)">+</button>
+                    </div>
+                `;
+            } else {
+                let divRow = document.createElement('div');
+                divRow.className = 'divisions-row';
+                for (let d = 1; d <= 3; d++) {
+                    let targetTotal = (state.desiredRank * 3) + (d - 1);
+                    let currentTotal = (state.currentRank * 3) + (state.currentDiv - 1);
+                    let isDisabled = targetTotal <= currentTotal;
+
+                    let btn = document.createElement('div');
+                    btn.className = `div-btn ${state.desiredDiv === d ? 'active' : ''} ${isDisabled ? 'disabled' : ''}`;
+                    btn.innerText = `${d}`;
+
+                    if (!isDisabled) {
+                        btn.onclick = () => {
+                            state.desiredDiv = d;
+                            initCalculator();
+                        };
+                    }
+                    divRow.appendChild(btn);
+                }
+                container.appendChild(divRow);
+            }
+
+            let currentDivRow = document.getElementById('currentDivisionsRow');
+            currentDivRow.innerHTML = '';
+            for (let d = 1; d <= 3; d++) {
+                let btn = document.createElement('div');
+                btn.className = `div-btn ${state.currentDiv === d ? 'active' : ''}`;
+                btn.innerText = `${d}`;
+                btn.onclick = () => {
+                    state.currentDiv = d;
+                    let currentTotal = (state.currentRank * 3) + (state.currentDiv - 1);
+                    let desiredTotal = state.desiredRank === 7 ? (7 * 3) + (state.desiredRR / 33.3) : (state.desiredRank * 3) + (state.desiredDiv - 1);
+                    if (desiredTotal <= currentTotal) {
+                        if(state.desiredRank === 7) {
+                            state.desiredRR = Math.min(400, Math.max(10, ((state.currentRank * 3) + (state.currentDiv - 1) - (7*3))*33.3 + 10));
+                        } else {
+                            state.desiredDiv = Math.min(3, state.currentDiv + 1);
+                        }
+                    }
+                    initCalculator();
+                };
+                currentDivRow.appendChild(btn);
+            }
+        }
+
+        function adjustRR(amount) {
+            state.desiredRR += amount;
+            if (state.desiredRR < 0) state.desiredRR = 0;
+            if (state.desiredRR > 400) state.desiredRR = 400;
+
+            document.getElementById('immortalRRInput').value = state.desiredRR;
+            calculatePrice();
+        }
+
+        function updateRRFromInput(input) {
+            let val = parseInt(input.value);
+            if (isNaN(val)) val = 0;
+            if (val > 400) val = 400;
+            if (val < 0) val = 0;
+            state.desiredRR = val;
+            calculatePrice();
+        }
+
+        function renderExtras() {
+            let extrasList = document.getElementById('extrasList');
+            extrasList.innerHTML = '';
+
+            let streamText = translations[lang].streamOpt;
+            let priorityText = translations[lang].priorityOpt;
+            let boosterText = translations[lang].boosterOpt;
+
+            if (state.mode === 'solo') {
+                extrasList.innerHTML = `
+                    <div class="extra-item">
+                        <div class="extra-label-group">
+                            <span>${streamText}</span>
+                            <span class="extra-badge badge-positive">+15%</span>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="optStream" ${state.options.stream ? 'checked' : ''} onchange="toggleOption('stream')">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="extra-item">
+                        <div class="extra-label-group">
+                            <span>${priorityText}</span>
+                            <span class="extra-badge badge-positive">+22%</span>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="optPriority" ${state.options.priority ? 'checked' : ''} onchange="toggleOption('priority')">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="extra-item">
+                        <div class="extra-label-group">
+                            <span>${boosterText}</span>
+                            <span class="extra-badge badge-negative">-15%</span>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="optBooster" ${state.options.boosterDiscount ? 'checked' : ''} onchange="toggleOption('boosterDiscount')">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                `;
+            } else {
+                extrasList.innerHTML = `
+                    <div class="extra-item">
+                        <div class="extra-label-group">
+                            <span>${priorityText}</span>
+                            <span class="extra-badge badge-positive">+22%</span>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="optPriority" ${state.options.priority ? 'checked' : ''} onchange="toggleOption('priority')">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="extra-item">
+                        <div class="extra-label-group">
+                            <span>${boosterText}</span>
+                            <span class="extra-badge badge-negative">-15%</span>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="optBooster" ${state.options.boosterDiscount ? 'checked' : ''} onchange="toggleOption('boosterDiscount')">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                `;
+            }
+        }
+
+        function toggleOption(optName) {
+            state.options[optName] = document.getElementById(
+                optName === 'stream' ? 'optStream' : optName === 'priority' ? 'optPriority' : 'optBooster'
+            ).checked;
+            calculatePrice();
+        }
+
+        function getAbsolutePrice(rank, div, rrBracket) {
+            let basePricesByRankDiv = {
+                "0_1": 0.00,  "0_2": 3.33,  "0_3": 6.65,
+                "1_1": 9.98,  "1_2": 13.30, "1_3": 16.63,
+                "2_1": 20.43, "2_2": 24.70, "2_3": 28.98,
+                "3_1": 33.73, "3_2": 38.95, "3_3": 44.18,
+                "4_1": 50.35, "4_2": 57.95, "4_3": 65.55,
+                "5_1": 74.10, "5_2": 87.40, "5_3": 100.70,
+                "6_1": 116.85,"6_2": 138.70,"6_3": 161.50,
+                "7_1": 190.00
+            };
+
+            let key = `${rank}_${div}`;
+            let base = basePricesByRankDiv[key] !== undefined ? basePricesByRankDiv[key] : 0;
+
+            if (rank < 7) {
+                let rrAdditions = [0, 1.09, 2.19, 3.28, 4.37];
+                base += (rrAdditions[rrBracket] || 0);
+            }
+
+            return base * 1.03;
+        }
+
+        function calculatePrice() {
+            const currentRR = parseInt(document.getElementById('currentRR').value);
+
+            let startPrice = getAbsolutePrice(state.currentRank, state.currentDiv, currentRR);
+            let endPrice = 0;
+
+            if (state.desiredRank === 7) {
+                let baseImmo0 = getAbsolutePrice(7, 1, 0);
+                let rrExtra = ((state.desiredRR / 10) * 4.75) * 1.03;
+                endPrice = baseImmo0 + rrExtra;
+            } else {
+                endPrice = getAbsolutePrice(state.desiredRank, state.desiredDiv, 0);
+            }
+
+            let basePrice = endPrice - startPrice;
+
+            let startSteps = (state.currentRank * 3) + (state.currentDiv - 1);
+            let endSteps = state.desiredRank === 7 ? (7 * 3) + (state.desiredRR / 33.3) : (state.desiredRank * 3) + (state.desiredDiv - 1);
+            let stepsDiff = endSteps - startSteps;
+
+            if (stepsDiff > 0) {
+                let distanceMultiplier = 1 + (stepsDiff * 0.008); 
+
+                if (state.desiredRank >= 6) {
+                    let highRankBonus = (state.desiredRank === 7 ? 0.14 : 0.08) + (stepsDiff * 0.008);
+                    distanceMultiplier += highRankBonus;
+                }
+
+                basePrice *= distanceMultiplier;
+            }
+
+            let currentRankObj = ranks[state.currentRank];
+            let desiredRankObj = ranks[state.desiredRank];
+            
+            let currentRankName = getRankName(currentRankObj);
+            let desiredRankName = getRankName(desiredRankObj);
+
+            let currentRRText = document.getElementById('currentRR').options[document.getElementById('currentRR').selectedIndex].text;
+            
+            let summaryElement = document.getElementById('checkoutSummaryText');
+            let deliveryBox = document.getElementById('deliveryTimeBox');
+
+            if (basePrice <= 0) {
+                summaryElement.innerHTML = `<span>Invalid selection</span>`;
+                deliveryBox.style.display = 'none';
+                document.getElementById('oldPrice').innerText = "";
+                document.getElementById('totalPrice').innerText = "Invalid";
+                return;
+            }
+
+            // Calcul du temps exponentiel lissé : 
+            // Formule basée sur une puissance de 1.35 pour coller à tes repères (Iron 1 -> Bronze 1 = ~6h, Iron 1 -> Bronze 3 = ~18h / 1 jour, Diamant 1 -> Ascendant 1 = ~3 jours, Iron 1 -> Immo 1 = 21 jours / 3 semaines)
+            let maxTotalSteps = 21;
+            let progressRatio = stepsDiff / maxTotalSteps;
+            let daysEstimated = Math.pow(progressRatio, 1.35) * 21;
+
+            let deliveryText = "";
+            let deliveryLabel = translations[lang].deliveryLabel;
+
+            if (daysEstimated <= 0.25) {
+                deliveryText = lang === 'fr' ? "6 heures max" : (lang === 'es' ? "Máx. 6 horas" : (lang === 'it' ? "Max 6 ore" : (lang === 'de' ? "Max. 6 Stunden" : "Max 6 hours")));
+            } else if (daysEstimated <= 0.5) {
+                deliveryText = lang === 'fr' ? "12 heures max" : (lang === 'es' ? "Máx. 12 horas" : (lang === 'it' ? "Max 12 ore" : (lang === 'de' ? "Max. 12 Stunden" : "Max 12 hours")));
+            } else if (daysEstimated <= 1.0) {
+                deliveryText = lang === 'fr' ? "1 jour max" : (lang === 'es' ? "Máx. 1 día" : (lang === 'it' ? "Max 1 giorno" : (lang === 'de' ? "Max. 1 Tag" : "Max 1 day")));
+            } else if (daysEstimated <= 2.0) {
+                deliveryText = lang === 'fr' ? "2 jours max" : (lang === 'es' ? "Máx. 2 días" : (lang === 'it' ? "Max 2 giorni" : (lang === 'de' ? "Max. 2 Tage" : "Max 2 days")));
+            } else if (daysEstimated <= 3.0) {
+                deliveryText = lang === 'fr' ? "3 jours max" : (lang === 'es' ? "Máx. 3 días" : (lang === 'it' ? "Max 3 giorni" : (lang === 'de' ? "Max. 3 Tage" : "Max 3 days")));
+            } else if (daysEstimated <= 5.0) {
+                deliveryText = lang === 'fr' ? "4 - 5 jours max" : (lang === 'es' ? "Máx. 4 - 5 días" : (lang === 'it' ? "Max 4 - 5 giorni" : (lang === 'de' ? "Max. 4 - 5 Tage" : "Max 4 - 5 days")));
+            } else if (daysEstimated <= 9.0) {
+                deliveryText = lang === 'fr' ? "1 semaine max" : (lang === 'es' ? "Máx. 1 semana" : (lang === 'it' ? "Max 1 settimana" : (lang === 'de' ? "Max. 1 Woche" : "Max 1 week")));
+            } else if (daysEstimated <= 15.0) {
+                deliveryText = lang === 'fr' ? "2 semaines max" : (lang === 'es' ? "Máx. 2 semanas" : (lang === 'it' ? "Max 2 settimane" : (lang === 'de' ? "Max. 2 Wochen" : "Max 2 weeks")));
+            } else {
+                deliveryText = lang === 'fr' ? "3 semaines max" : (lang === 'es' ? "Máx. 3 semanas" : (lang === 'it' ? "Max 3 settimane" : (lang === 'de' ? "Max. 3 Wochen" : "Max 3 weeks")));
+            }
+
+            deliveryBox.style.display = 'flex';
+            deliveryBox.innerHTML = `${deliveryLabel} <strong>&nbsp;${deliveryText}</strong>`;
+
+            let immoLabel = lang === 'fr' ? 'Immortel' : (lang === 'es' ? 'Inmortal' : (lang === 'it' ? 'Immortale' : (lang === 'de' ? 'Unsterblich' : 'Immortal')));
+            let desiredText = state.desiredRank === 7 ? `${immoLabel} (${state.desiredRR} RR)` : `${desiredRankName} ${state.desiredDiv}`;
+
+            summaryElement.innerHTML = `
+                <div class="summary-rank-item">
+                    <img src="${currentRankObj.file}" class="summary-rank-img"> ${currentRankName} ${state.currentDiv}
+                </div> 
+                <span style="color: #666; font-size: 0.75rem;">(${currentRRText})</span>
+                &nbsp;➔&nbsp; 
+                <div class="summary-rank-item">
+                    <img src="${desiredRankObj.file}" class="summary-rank-img"> ${desiredText}
+                </div>
+            `;
+
+            if (state.mode === 'duo') {
+                basePrice *= 1.30; 
+            }
+
+            let finalPrice = basePrice;
+            if (state.mode === 'solo' && state.options.stream) {
+                finalPrice += basePrice * 0.15; 
+            }
+            if (state.options.priority) {
+                finalPrice += basePrice * 0.22; 
+            }
+            if (state.options.boosterDiscount) {
+                finalPrice -= basePrice * 0.15; 
+            }
+
+            let originalPrice = finalPrice / 0.80;
+
+            document.getElementById('oldPrice').innerText = originalPrice.toFixed(2) + " €";
+            document.getElementById('totalPrice').innerText = finalPrice.toFixed(2) + " €";
+        }
+
+        // Initialisation par défaut en Français
+        setLanguage('fr');
+    </script>
+
+</body>
+</html>
