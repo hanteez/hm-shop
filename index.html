@@ -403,21 +403,6 @@
             flex-wrap: wrap;
         }
 
-        .delivery-time-box {
-            font-size: 0.8rem;
-            color: #00e676;
-            background-color: rgba(0, 230, 118, 0.08);
-            border: 1px solid rgba(0, 230, 118, 0.2);
-            padding: 8px 12px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            text-align: center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-        }
-
         .summary-rank-item {
             display: inline-flex;
             align-items: center;
@@ -562,6 +547,7 @@
             align-items: center;
             border-top: 1px solid #333333;
             padding-top: 15px;
+            margin-bottom: 15px;
         }
 
         .price-info span {
@@ -592,51 +578,42 @@
             color: #ffffff;
         }
 
-        .btn-order {
-            background-color: #ffffff;
-            color: #0d0d0d;
+        /* Bouton Discord et mention de négociation */
+        .discord-section {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            border-top: 1px solid #333333;
+            padding-top: 15px;
+            text-align: center;
+        }
+
+        .discord-notice {
+            font-size: 0.85rem;
+            color: #00e676;
+            font-weight: 500;
+        }
+
+        .btn-discord {
+            display: block;
+            width: 100%;
+            background-color: #5865F2; /* Couleur officielle de Discord */
+            color: #ffffff;
             border: none;
             border-radius: 8px;
-            padding: 12px 25px;
-            font-size: 0.95rem;
+            padding: 14px 20px;
+            font-size: 1rem;
             font-weight: bold;
             cursor: pointer;
             text-transform: uppercase;
-            transition: background-color 0.2s;
+            text-decoration: none;
+            transition: background-color 0.2s, transform 0.1s;
+            box-sizing: border-box;
+            text-align: center;
         }
 
-        .btn-order:hover {
-            background-color: #d9d9d9;
-        }
-
-        .advice-card {
-            background-color: #1a1a1a;
-            border: 1px solid #333333;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
-            display: flex;
-            gap: 15px;
-            align-items: flex-start;
-        }
-
-        .advice-icon {
-            font-size: 1.4rem;
-            background-color: #262626;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            border: 1px solid #404040;
-        }
-
-        .advice-text-content {
-            font-size: 0.85rem;
-            line-height: 1.4;
-            color: #cccccc;
+        .btn-discord:hover {
+            background-color: #4752C4;
         }
 
         @media (max-width: 850px) {
@@ -732,7 +709,7 @@
             </div>
         </div>
 
-        <!-- COLONNE DE DROITE : Checkout + Conseils -->
+        <!-- COLONNE DE DROITE : Checkout -->
         <div class="right-column">
             <div class="card">
                 <div class="card-header" style="margin-bottom: 15px;">
@@ -744,9 +721,6 @@
                 </div>
 
                 <div class="checkout-summary" id="checkoutSummaryText"></div>
-                
-                <!-- Boîte de temps de livraison estimé maximale -->
-                <div class="delivery-time-box" id="deliveryTimeBox"></div>
 
                 <div class="discount-banner" id="discountBanner">
                     🎉 <strong>Réduction -20% Premiers Clients</strong><br>
@@ -768,14 +742,13 @@
                             <span class="price-amount" id="totalPrice">0.00 €</span>
                         </div>
                     </div>
-                    <button class="btn-order" id="btnOrderText" onclick="alert(translations[lang].alertOrder)">Commander →</button>
                 </div>
-            </div>
 
-            <!-- Encadré de conseils, réserve de refus et disclaimer anti-cheat -->
-            <div class="advice-card">
-                <div class="advice-icon">⚠️</div>
-                <div class="advice-text-content" id="adviceTextContent"></div>
+                <!-- Section Discord et Négociation -->
+                <div class="discord-section">
+                    <span class="discord-notice" id="discordNoticeText">💬 Prix discutables sur le serveur Discord !</span>
+                    <a href="https://discord.gg/n7PgsrYFuQ" target="_blank" class="btn-discord" id="btnDiscordText">Se rendre sur Discord →</a>
+                </div>
             </div>
         </div>
 
@@ -809,7 +782,6 @@
                 desiredDesc: "Sélectionnez votre rang visé et division ou RR.",
                 checkoutTitle: "Panneau de Commande",
                 checkoutDesc: "Ajoutez des options personnalisées à votre boost.",
-                deliveryLabel: "⏱️ Livraison estimée MAXIMALE :",
                 discountHtml: "🎉 <strong>Réduction -20% Premiers Clients</strong><br><span style='font-size: 0.78rem; color: #a6a6a6;'>Remise spéciale de lancement appliquée pour nos premiers clients !</span>",
                 soloBtn: "Solo Boosting",
                 duoBtn: "Duo Boosting",
@@ -817,12 +789,8 @@
                 priorityOpt: "Passer en priorité",
                 boosterOpt: "Réduction Booster Serveur",
                 totalPrice: "Prix Total",
-                alertOrder: "Redirection vers le système de tickets Discord !",
-                btnOrderText: "Commander →",
-                adviceHtml: `
-                    <p><strong>Conseil :</strong> Nous déconseillons les grands écarts (ex: Silver 1 à Ascendant 1). Cela augmente les coûts, les délais et les risques de ban, et <strong>nous nous réservons le droit de refuser toute demande trop ambitieuse</strong>.</p>
-                    <p style="margin-top: 10px; border-top: 1px solid #333; padding-top: 8px; color: #00e676;"><strong>🛡️ 100% Sécurité :</strong> Nos boosters n'utilisent aucun logiciel de triche, aucun logiciel tiers (third-party), ni aucun autre moyen illicite sur le jeu.</p>
-                `
+                discordNotice: "💬 Prix discutables sur le serveur Discord !",
+                btnDiscordText: "Se rendre sur Discord →"
             },
             en: {
                 subtitle: "Valorant Rank Boosting Calculator",
@@ -837,7 +805,6 @@
                 desiredDesc: "Select your desired tier and division or RR.",
                 checkoutTitle: "Checkout",
                 checkoutDesc: "Add extra options to your boost.",
-                deliveryLabel: "⏱️ MAX estimated delivery time:",
                 discountHtml: "🎉 <strong>-20% First Clients Discount</strong><br><span style='font-size: 0.78rem; color: #a6a6a6;'>Special launch discount applied for our early clients!</span>",
                 soloBtn: "Solo Boosting",
                 duoBtn: "Duo Boosting",
@@ -845,12 +812,8 @@
                 priorityOpt: "Priority Boost Completion",
                 boosterOpt: "Server Booster Discount",
                 totalPrice: "Total Price",
-                alertOrder: "Redirecting to Discord ticket system!",
-                btnOrderText: "Buy Boost →",
-                adviceHtml: `
-                    <p><strong>Pro Tip:</strong> We advise against huge rank leaps (e.g., Silver 1 to Ascendant 1). It increases costs and time, raises security ban risks, and <strong>we reserve the right to refuse overly ambitious requests</strong> to protect your account.</p>
-                    <p style="margin-top: 10px; border-top: 1px solid #333; padding-top: 8px; color: #00e676;"><strong>🛡️ 100% Security:</strong> Our boosters do not use any cheating software, third-party software, or any other unauthorized means in the game.</p>
-                `
+                discordNotice: "💬 Prices are negotiable on the Discord server!",
+                btnDiscordText: "Go to Discord →"
             },
             es: {
                 subtitle: "Calculadora de Rank Boosting de Valorant",
@@ -865,7 +828,6 @@
                 desiredDesc: "Selecciona tu rango deseado y división o RR.",
                 checkoutTitle: "Panel de Pago",
                 checkoutDesc: "Añade opciones adicionales a tu boost.",
-                deliveryLabel: "⏱️ Tiempo de entrega MÁXIMO estimado:",
                 discountHtml: "🎉 <strong>Descuento del -20% Primeros Clientes</strong><br><span style='font-size: 0.78rem; color: #a6a6a6;'>¡Descuento especial de lanzamiento aplicado!</span>",
                 soloBtn: "Solo Boosting",
                 duoBtn: "Duo Boosting",
@@ -873,12 +835,8 @@
                 priorityOpt: "Boost Prioritario",
                 boosterOpt: "Descuento Booster de Servidor",
                 totalPrice: "Precio Total",
-                alertOrder: "¡Redirigiendo al sistema de tickets de Discord!",
-                btnOrderText: "Comprar Boost →",
-                adviceHtml: `
-                    <p><strong>Consejo:</strong> Aconsejamos no hacer saltos de rango muy grandes (ej. de Silver 1 a Ascendant 1). Incrementa los costes, tiempos y riesgos de baneo, y <strong>nos reservamos el derecho de rechazar solicitudes demasiado ambiciosas</strong>.</p>
-                    <p style="margin-top: 10px; border-top: 1px solid #333; padding-top: 8px; color: #00e676;"><strong>🛡️ 100% Seguridad:</strong> Nativos boosters no utilizan ningún software de trampas, software de terceros ni ningún otro medio ilícito en el juego.</p>
-                `
+                discordNotice: "💬 ¡Precios negociables en el servidor de Discord!",
+                btnDiscordText: "Ir a Discord →"
             },
             it: {
                 subtitle: "Calcolatore di Rank Boosting per Valorant",
@@ -893,7 +851,6 @@
                 desiredDesc: "Seleziona il grado desiderato e divisione o RR.",
                 checkoutTitle: "Pannello d'Ordine",
                 checkoutDesc: "Aggiungi opzioni extra al tuo boost.",
-                deliveryLabel: "⏱️ Tempo di consegna MASSIMO stimato:",
                 discountHtml: "🎉 <strong>Sconto -20% Primi Clienti</strong><br><span style='font-size: 0.78rem; color: #a6a6a6;'>Sconto speciale di lancio applicato per i nostri primi clienti!</span>",
                 soloBtn: "Solo Boosting",
                 duoBtn: "Duo Boosting",
@@ -901,12 +858,8 @@
                 priorityOpt: "Completamento Prioritario",
                 boosterOpt: "Sconto Booster Server",
                 totalPrice: "Prezzo Totale",
-                alertOrder: "Reindirizzamento al sistema di ticket Discord!",
-                btnOrderText: "Acquista Boost →",
-                adviceHtml: `
-                    <p><strong>Consiglio:</strong> Sconsigliamo grandi salti di grado (es. da Silver 1 ad Ascendant 1). Aumenta i costi, i tempi e i rischi di ban, e <strong>ci riserva il diritto di rifiutare richieste troppo ambiziose</strong>.</p>
-                    <p style="margin-top: 10px; border-top: 1px solid #333; padding-top: 8px; color: #00e676;"><strong>🛡️ 100% Sicurezza:</strong> I nostri booster non utilizzano alcun software di cheat, software di terze parti (third-party) o altri mezzi illeciti nel gioco.</p>
-                `
+                discordNotice: "💬 Prezzi trattabili sul server Discord!",
+                btnDiscordText: "Vai su Discord →"
             },
             de: {
                 subtitle: "Valorant Rang Boosting Rechner",
@@ -921,7 +874,6 @@
                 desiredDesc: "Wähle deinen Wunschrang und Division oder RR.",
                 checkoutTitle: "Kasse",
                 checkoutDesc: "Füge zusätzliche Optionen zu deinem Boost hinzu.",
-                deliveryLabel: "⏱️ Maximale geschätzte Lieferzeit:",
                 discountHtml: "🎉 <strong>-20% Rabatt für Erstkunden</strong><br><span style='font-size: 0.78rem; color: #a6a6a6;'>Spezieller Einführungsrabatt für unsere ersten Kunden!</span>",
                 soloBtn: "Solo Boosting",
                 duoBtn: "Duo Boosting",
@@ -929,12 +881,8 @@
                 priorityOpt: "Priorität-Boost",
                 boosterOpt: "Server-Booster Rabatt",
                 totalPrice: "Gesamtpreis",
-                alertOrder: "Weiterleitung zum Discord-Ticketsystem!",
-                btnOrderText: "Boost Kaufen →",
-                adviceHtml: `
-                    <p><strong>Tipp:</strong> Wir raten von riesigen Rangsprüngen ab (z.B. Silver 1 zu Ascendant 1). Das erhöht Kosten, Lieferzeiten und das Risiko von Sicherheitsbanns, und <strong>wir behalten uns das Recht vor, zu ambitionierte Anfragen abzulehnen</strong>.</p>
-                    <p style="margin-top: 10px; border-top: 1px solid #333; padding-top: 8px; color: #00e676;"><strong>🛡️ 100% Sicherheit:</strong> Unsere Booster verwenden keinerlei Cheat-Software, Drittanbieter-Software (Third-Party) oder andere unzulässige Hilfsmittel im Spiel.</p>
-                `
+                discordNotice: "💬 Preise auf dem Discord-Server verhandelbar!",
+                btnDiscordText: "Zu Discord wechseln →"
             }
         };
 
@@ -976,8 +924,8 @@
             document.getElementById('btnSolo').innerText = translations[lang].soloBtn;
             document.getElementById('btnDuo').innerText = translations[lang].duoBtn;
             document.getElementById('totalPriceTitle').innerText = translations[lang].totalPrice;
-            document.getElementById('btnOrderText').innerText = translations[lang].btnOrderText;
-            document.getElementById('adviceTextContent').innerHTML = translations[lang].adviceHtml;
+            document.getElementById('discordNoticeText').innerText = translations[lang].discordNotice;
+            document.getElementById('btnDiscordText').innerText = translations[lang].btnDiscordText;
 
             initCalculator();
         }
@@ -1265,9 +1213,7 @@
                 basePrice *= distanceMultiplier;
             }
 
-            // --- NOUVELLE PENTE DE RÉDUCTION VARIABLE (30% sur bas rangs -> 10% sur hauts rangs) ---
-            // Le rang de départ (state.currentRank) varie de 0 (Fer) à 7 (Immortel).
-            // On calcule un pourcentage de réduction progressif (de 0.70 pour -30% à 0.90 pour -10%).
+            // Pente de réduction variable (30% sur bas rangs -> 10% sur hauts rangs)
             let discountFactor = 0.70 + (state.currentRank / 7) * 0.20;
             basePrice *= discountFactor;
 
@@ -1280,45 +1226,13 @@
             let currentRRText = document.getElementById('currentRR').options[document.getElementById('currentRR').selectedIndex].text;
             
             let summaryElement = document.getElementById('checkoutSummaryText');
-            let deliveryBox = document.getElementById('deliveryTimeBox');
 
             if (basePrice <= 0) {
                 summaryElement.innerHTML = `<span>Invalid selection</span>`;
-                deliveryBox.style.display = 'none';
                 document.getElementById('oldPrice').innerText = "";
                 document.getElementById('totalPrice').innerText = "Invalid";
                 return;
             }
-
-            let maxTotalSteps = 21;
-            let progressRatio = stepsDiff / maxTotalSteps;
-            let daysEstimated = Math.pow(progressRatio, 1.35) * 21;
-
-            let deliveryText = "";
-            let deliveryLabel = translations[lang].deliveryLabel;
-
-            if (daysEstimated <= 0.25) {
-                deliveryText = lang === 'fr' ? "6 heures max" : (lang === 'es' ? "Máx. 6 horas" : (lang === 'it' ? "Max 6 ore" : (lang === 'de' ? "Max. 6 Stunden" : "Max 6 hours")));
-            } else if (daysEstimated <= 0.5) {
-                deliveryText = lang === 'fr' ? "12 heures max" : (lang === 'es' ? "Máx. 12 horas" : (lang === 'it' ? "Max 12 ore" : (lang === 'de' ? "Max. 12 Stunden" : "Max 12 hours")));
-            } else if (daysEstimated <= 1.0) {
-                deliveryText = lang === 'fr' ? "1 jour max" : (lang === 'es' ? "Máx. 1 día" : (lang === 'it' ? "Max 1 giorno" : (lang === 'de' ? "Max. 1 Tag" : "Max 1 day")));
-            } else if (daysEstimated <= 2.0) {
-                deliveryText = lang === 'fr' ? "2 jours max" : (lang === 'es' ? "Máx. 2 días" : (lang === 'it' ? "Max 2 giorni" : (lang === 'de' ? "Max. 2 Tage" : "Max 2 days")));
-            } else if (daysEstimated <= 3.0) {
-                deliveryText = lang === 'fr' ? "3 jours max" : (lang === 'es' ? "Máx. 3 días" : (lang === 'it' ? "Max 3 giorni" : (lang === 'de' ? "Max. 3 Tage" : "Max 3 days")));
-            } else if (daysEstimated <= 5.0) {
-                deliveryText = lang === 'fr' ? "4 - 5 jours max" : (lang === 'es' ? "Máx. 4 - 5 días" : (lang === 'it' ? "Max 4 - 5 giorni" : (lang === 'de' ? "Max. 4 - 5 Tage" : "Max 4 - 5 days")));
-            } else if (daysEstimated <= 9.0) {
-                deliveryText = lang === 'fr' ? "1 semaine max" : (lang === 'es' ? "Máx. 1 semana" : (lang === 'it' ? "Max 1 settimana" : (lang === 'de' ? "Max. 1 Woche" : "Max 1 week")));
-            } else if (daysEstimated <= 15.0) {
-                deliveryText = lang === 'fr' ? "2 semaines max" : (lang === 'es' ? "Máx. 2 semanas" : (lang === 'it' ? "Max 2 settimane" : (lang === 'de' ? "Max. 2 Wochen" : "Max 2 weeks")));
-            } else {
-                deliveryText = lang === 'fr' ? "3 semaines max" : (lang === 'es' ? "Máx. 3 semanas" : (lang === 'it' ? "Max 3 settimane" : (lang === 'de' ? "Max. 3 Wochen" : "Max 3 weeks")));
-            }
-
-            deliveryBox.style.display = 'flex';
-            deliveryBox.innerHTML = `${deliveryLabel} <strong>&nbsp;${deliveryText}</strong>`;
 
             let immoLabel = lang === 'fr' ? 'Immortel' : (lang === 'es' ? 'Inmortal' : (lang === 'it' ? 'Immortale' : (lang === 'de' ? 'Unsterblich' : 'Immortal')));
             let desiredText = state.desiredRank === 7 ? `${immoLabel} (${state.desiredRR} RR)` : `${desiredRankName} ${state.desiredDiv}`;
