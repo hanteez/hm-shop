@@ -1265,6 +1265,12 @@
                 basePrice *= distanceMultiplier;
             }
 
+            // --- NOUVELLE PENTE DE RÉDUCTION VARIABLE (30% sur bas rangs -> 10% sur hauts rangs) ---
+            // Le rang de départ (state.currentRank) varie de 0 (Fer) à 7 (Immortel).
+            // On calcule un pourcentage de réduction progressif (de 0.70 pour -30% à 0.90 pour -10%).
+            let discountFactor = 0.70 + (state.currentRank / 7) * 0.20;
+            basePrice *= discountFactor;
+
             let currentRankObj = ranks[state.currentRank];
             let desiredRankObj = ranks[state.desiredRank];
             
